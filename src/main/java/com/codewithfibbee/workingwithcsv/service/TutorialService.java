@@ -3,6 +3,7 @@ package com.codewithfibbee.workingwithcsv.service;
 import com.codewithfibbee.workingwithcsv.model.Tutorial;
 import com.codewithfibbee.workingwithcsv.repository.TutorialRepo;
 import com.codewithfibbee.workingwithcsv.util.CSVHelper;
+import com.codewithfibbee.workingwithcsv.util.ExcelHelper;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -15,12 +16,21 @@ import java.util.List;
 public class TutorialService {
     TutorialRepo repository;
 
-    public void save(MultipartFile file) {
+    public void saveFromCSV(MultipartFile file) {
         try {
             List<Tutorial> tutorials = CSVHelper.csvToTutorials(file.getInputStream());
             repository.saveAll(tutorials);
         } catch (IOException e) {
             throw new RuntimeException("fail to store csv data: " + e.getMessage());
+        }
+    }
+
+    public void saveFromExcel(MultipartFile file) {
+        try {
+            List<Tutorial> tutorials = ExcelHelper.excelToTutorials(file.getInputStream());
+            repository.saveAll(tutorials);
+        } catch (IOException e) {
+            throw new RuntimeException("fail to store excel data: " + e.getMessage());
         }
     }
 
